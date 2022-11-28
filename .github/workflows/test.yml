@@ -1,0 +1,17 @@
+name: Test os226
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install gtest manually
+      run: sudo apt-get install libgtest-dev
+
+    - uses: actions/checkout@v1
+
+    - name: run test
+      run: cd template/test && ./test.sh
