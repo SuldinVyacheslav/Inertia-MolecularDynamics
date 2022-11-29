@@ -1,64 +1,102 @@
-#include <SFML/Graphics.hpp>
-
 #include <iostream>
 #include <string.h>
 #include <math.h>
-#include <chrono>
-#include <execution> // parallel
 
 #include "Vector.h"    // Класс работы с векторами
 #include "Constants.h" // Константы для СИ
 #include "Physics.h"   // Начальное распределение скоростей
+#include "Graph.h"
+#include "Visualization.h"
 
 using namespace std;
 
-void draw(sf::RenderWindow *window, float radius, sf::Color color, double x, double y, double scale)
+void setup_positions(vector<Molecule> &molecules)
 {
-    sf::CircleShape center(radius);
-    center.setFillColor(color);
-    center.setPosition(x / scale, y / scale);
-    window->draw(center);
-}
-
-void graph(vector<Molecule> molecules, sf::RenderWindow *window, vector<int> &kin, double value)
-{
-
-    double x = 1.3 * pow(10, 8);
-
-    if (kin.size() < 1000)
+    for (int i = 1; i < MOL_SIDE + 1; i++)
     {
-        kin.push_back(value);
-    }
-    else
-    {
-        for (int i = 0; i < kin.size(); i++)
+        for (int j = 1; j < MOL_SIDE + 1; j++)
         {
-            kin[i] = kin[i + 1];
+            for (int k = 1; k < MOL_SIDE + 1; k++)
+            {
+                Molecule to_add = Molecule(Vector((i + 0.5) * DIST, (j + 0.5) * DIST, (k + 0.5) * DIST), get_maxwell_vector());
+
+                molecules.push_back(to_add);
+            }
         }
-        kin[kin.size()] = value;
     }
-    for (int i = kin.size(); i > 1; i--)
-    {
-        draw(window, 1, sf::Color::Yellow,
-             i,
-             (kin[i] / x) * 1000 * 10, 1);
-    }
-    window->display();
 }
+
+void calc_force(vector<Molecule> &molecules)
+{
+    for (int i = 0; i < molecules.size(); i++)
+    {
+        Vector force_sum = Vector(0, 0, 0);
+
+        for (int k = i + 1; k < molecules.size(); k++)
+        {
+            pair<double, Vector> dist_dir = calc_periodic_dist(molecules[i].coordinates, molecules[k].coordinates);
+
+            if (dist_dir.first != 0)
+            {
+                // if (d.molecules < 2 * ARGON_RADIUS)
+                // {
+                //     molecules[i].Collide(molecules[k]);
+                // }
+                Vector force = dist_dir.second.normalize() * lennard_jones(dist_dir.first);
+
+                force_sum += force;
+
+                molecules[k].force += -force;
+            }
+        }
+        molecules[i].force += force_sum;
+    }
+}
+
+// vector<sf::RenderWindow *> setup(int argc, char *argv[])
+// {
+//     sf::RenderWindow window;
+//     window.create(sf::VideoMode(X, Y), "simulation");
+
+//     vector<sf::RenderWindow *> windows;
+//     windows.reserve(10);
+
+//     windows.push_back(&window);
+
+//     char *graphs[2] = {"-kin", "-force"};
+//     for (int i = 0; i < argc; i++)
+//     {
+//         for (int j = 0; j < 2; j++)
+//         {
+//             if (strcmp(argv[i], graphs[j]))
+//             {
+//                 if (strcmp(graphs[j], "-kin"))
+//                 {
+//                     sf::RenderWindow kinetic;
+//                     kinetic.create(sf::VideoMode(X, Y), "kinetic");
+//                     windows.push_back(&kinetic);
+//                 }
+//                 else if (strcmp(graphs[j], "-force"))
+//                 {
+//                     sf::RenderWindow inertia;
+//                     inertia.create(sf::VideoMode(X, Y), "inertia force");
+//                     windows.push_back(&inertia);
+//                 }
+//             }
+//         }
+//     }
+// }
 
 int main(int argc, char *argv[])
 {
-    sf::RenderWindow window;
-    window.create(sf::VideoMode(X, Y), "simulation");
-    sf::RenderWindow kinetic;
-    kinetic.create(sf::VideoMode(X, Y), "kinetic");
-    sf::RenderWindow inertia;
-    inertia.create(sf::VideoMode(X, Y), "inertia force");
-    vector<int> kin;
-    kin.reserve(1000);
+    App visualization = App(argc, argv);
 
-    vector<int> ine;
-    ine.reserve(1000);
+    // vector<sf::RenderWindow *> windows = setup(argc, argv);
+
+    Graph kinetic_e = Graph(sf::Color::Blue);
+    Graph force = Graph(sf::Color::Blue);
+    Graph force_iner = Graph(sf::Color::Red);
+    Graph iner = Graph(sf::Color::Green);
 
     vector<Molecule> molecules;
     molecules.reserve(NUMBER_OF_MOLECULES);
@@ -72,33 +110,13 @@ int main(int argc, char *argv[])
     Vector inertion_center_prev = Vector(0, 0, 0);
     Vector inertion_center = Vector(0, 0, 0);
 
-    for (int i = 1; i < MOL_SIDE + 1; i++)
-    {
-        for (int j = 1; j < MOL_SIDE + 1; j++)
-        {
-            for (int k = 1; k < MOL_SIDE + 1; k++)
-            {
-                Molecule to_add = Molecule(Vector((i + 0.5) * DIST, (j + 0.5) * DIST, (k + 0.5) * DIST), get_maxwell_vector());
-                to_add.velocity.print();
-                molecules.push_back(to_add);
-            }
-        }
-    }
+    setup_positions(molecules);
 
     int count = 0;
-
-    while (window.isOpen())
+    while (visualization.main.isOpen())
     {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
 
-        kinetic.clear();
-        window.clear();
-        inertia.clear();
+        visualization.is_close();
 
         for (int i = 0; i < molecules.size(); i++)
         {
@@ -112,28 +130,27 @@ int main(int argc, char *argv[])
             //     current++;
             // }
 
-            draw(&window,
+            draw(&visualization.main,
                  10 + ((1000 * ARGON_RADIUS / (2 * MOL_SIDE * SIGMA)) / SIDE_OF_SYSTEM) * molecules[i].coordinates.z,
                  sf::Color::Cyan,
                  molecules[i].coordinates.x,
                  molecules[i].coordinates.y, SCALE);
-            draw(&window,
+            draw(&visualization.main,
                  ((1000 * ARGON_RADIUS / (2 * MOL_SIDE * SIGMA)) / SIDE_OF_SYSTEM) * molecules[i].coordinates.z,
-                 sf::Color::Green,
+                 i == 0 ? sf::Color::Red : sf::Color::Green,
                  molecules[i].coordinates.x,
                  molecules[i].coordinates.y, SCALE);
         }
 
         inertion_center_prev = inertion_center;
-        inertion_center.x = inertion_center.y = inertion_center.z = 0;
 
         inertion_center = calc_inertia_center(molecules);
 
-        draw(&window, 4, sf::Color::Red,
+        draw(&visualization.main, 4, sf::Color::Red,
              inertion_center_prev.x - (inertion_center.x - inertion_center_prev.x) * 1000,
              inertion_center_prev.y - (inertion_center.y - inertion_center_prev.y) * 1000, SCALE);
 
-        draw(&window, 4, sf::Color::Yellow,
+        draw(&visualization.main, 4, sf::Color::Yellow,
              inertion_center.x,
              inertion_center.y, SCALE);
 
@@ -144,34 +161,9 @@ int main(int argc, char *argv[])
         //             fp[i].y + 20 * SCALE);
         // }
 
-        for (int i = 0; i < molecules.size(); i++)
-        {
-            Vector force_sum = Vector(0, 0, 0);
+        calc_force(molecules);
 
-            for (int k = i + 1; k < molecules.size(); k++)
-            {
-                pair<double, Vector> dist_dir = calc_periodic_dist(molecules[i].coordinates, molecules[k].coordinates);
-
-                if (dist_dir.first != 0)
-                {
-                    // if (d.molecules < 2 * ARGON_RADIUS)
-                    // {
-                    //     molecules[i].Collide(molecules[k]);
-                    // }
-                    Vector force = dist_dir.second.normalize() * lennard_jones(dist_dir.first);
-
-                    force_sum += force;
-
-                    molecules[k].force += -force;
-                }
-            }
-            molecules[i].force += force_sum;
-        }
-        deltaInretion(molecules, inertion_center_prev, inertion_center);
-        for (int i = 0; i < molecules.size(); i++)
-        {
-            molecules[i].SemiStep();
-        }
+        Vector iner_force = calc_iner_force(molecules, inertion_center_prev, inertion_center);
 
         if (count % 1000 == 0)
         {
@@ -180,15 +172,21 @@ int main(int argc, char *argv[])
             {
                 velocity += molecules[i].velocity.x * molecules[i].velocity.x + molecules[i].velocity.y * molecules[i].velocity.y;
             }
+            Vector abc = molecules[0].force; // - iner_force;
 
-            graph(molecules, &kinetic, kin, velocity);
-            graph(molecules, &inertia, ine, molecules[0].force.length());
+            iner.update_graph(&visualization.force,iner_force.length());
+            kinetic_e.update_graph(&visualization.kinetic, velocity);
+            force_iner.update_graph(&visualization.force, (molecules[0].force + iner_force).length());
+            force.update_graph(&visualization.force, molecules[0].force.length());
+            // graph(molecules, &kinetic, kin, velocity);
+            // graph(molecules, &inertia, ine, ine1, molecules[0].force.length(), abc.length());
         }
 
         for (int i = 0; i < molecules.size(); i++)
         {
-            molecules[i].force = Vector(0, 0, 0);
+            molecules[i].SemiStep();
         }
-        window.display();
+
+        visualization.display();
     }
 }

@@ -46,16 +46,16 @@ double lennard_jones(double r)
     return 12 * (E / SIGMA) * (pow(SIGMA / r, 13) - pow(SIGMA / r, 7));
 }
 
-Vector calc_inertia_center(std::vector<Molecule> Molecules)
+Vector calc_inertia_center(std::vector<Molecule> molecules)
 {
     Vector Center = Vector(0, 0, 0);
     double mass = 0;
-    for (int i = 0; i < Molecules.size(); i++)
+    for (int i = 0; i < molecules.size(); i++)
     {
-        Center += (Molecules[i].coordinates * Molecules[i].mass);
-        mass += Molecules[i].mass;
+        Center += (molecules[i].coordinates * molecules[i].mass);
+        mass += molecules[i].mass;
     }
-    return Center * (1 / mass);
+    return Center / mass;
 }
 
 pair<double, Vector> calc_periodic_dist(Vector target, Vector to_copy)
@@ -89,14 +89,26 @@ pair<double, Vector> calc_periodic_dist(Vector target, Vector to_copy)
     return pair<double, Vector>(0, Vector(0, 0, 0));
 }
 
-void deltaInretion(std::vector<Molecule> first, Vector c, Vector cn)
+Vector calc_iner_force(std::vector<Molecule> first, Vector c, Vector cn)
 {
+    Vector force;
     for (int i = 0; i < first.size(); i++)
     {
         Vector M = first[i].force * distance(c, first[i].coordinates) - first[i].force_prev * distance(cn, first[i].coordinates_prev);
-
-        first[i].force += Vector(M.x * (1 / (first[i].coordinates_prev.x - first[i].coordinates.x)),
-                                M.y * (1 / (first[i].coordinates_prev.y - first[i].coordinates.y)),
-                                M.z * (1 / (first[i].coordinates_prev.z - first[i].coordinates.z)));
+        // cout << "_______________" << endl;
+        // first[i].force.print();
+        // first[i].force_prev.print();
+        // first[i].coordinates.print();
+        // first[i].coordinates_prev.print();
+        // c.print();
+        // cn.print();
+        if (i == 0)
+            force = Vector(M.x * (1 / (first[i].coordinates_prev.x - first[i].coordinates.x)),
+                                  M.y * (1 / (first[i].coordinates_prev.y - first[i].coordinates.y)),
+                                  M.z * (1 / (first[i].coordinates_prev.z - first[i].coordinates.z)));
+        first[i].force +=  Vector(M.x * (1 / (first[i].coordinates_prev.x - first[i].coordinates.x)),
+                                  M.y * (1 / (first[i].coordinates_prev.y - first[i].coordinates.y)),
+                                  M.z * (1 / (first[i].coordinates_prev.z - first[i].coordinates.z)));
     }
+    return force;
 }

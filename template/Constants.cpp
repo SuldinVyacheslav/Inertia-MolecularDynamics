@@ -3,7 +3,7 @@
 
 const int ACC = 500;
 
-const int MOL_SIDE = 2;
+const int MOL_SIDE = 4;
 const int NUMBER_OF_MOLECULES = MOL_SIDE * MOL_SIDE;
 const double DELTA_T = pow(10, -15);
 const int X = 1000;

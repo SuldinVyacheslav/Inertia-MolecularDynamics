@@ -47,7 +47,7 @@ Vector &Vector::operator-()
 
 void Vector::print()
 {
-    cout << to_string(x) + " " + to_string(y) + " " + to_string(z) + "\n";
+    cout << x << " " << y <<  " " << z << "\n";
 }
 Vector Vector::normalize()
 {

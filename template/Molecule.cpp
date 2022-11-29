@@ -20,6 +20,10 @@ void Molecule::SemiStep()
 
     velocity = semi_vel + acc * (DELTA_T / 2);
 
+    force_prev = force;
+
+    force = Vector(0, 0, 0);
+
     Periodic();
 }
 
