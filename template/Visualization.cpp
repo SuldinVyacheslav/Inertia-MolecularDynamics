@@ -23,7 +23,7 @@ App::App(int argc, char *argv[])
     for (int i = 0; i < argc; i++)
     {
 #define X(name) add_if(#name, argv[i], &name);
-        LIST_OF_GRAPHS
+        LIST_OF_WINDOW
 #undef X
     }
 }
@@ -39,15 +39,15 @@ void App::is_close()
             if (event.type == sf::Event::Closed) \
                 name.close();                    \
         }                                        \
-        name.clear();                            \
+        name.clear(sf::Color::White);            \
     }
-    LIST_OF_GRAPHS
+    LIST_OF_WINDOW
 #undef X
 }
 
 void App::display()
 {
 #define X(name) name.display();
-    LIST_OF_GRAPHS
+    LIST_OF_WINDOW
 #undef X
 }

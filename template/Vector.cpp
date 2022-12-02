@@ -47,7 +47,7 @@ Vector &Vector::operator-()
 
 void Vector::print()
 {
-    cout << x << " " << y <<  " " << z << "\n";
+    cout << x << " " << y << " " << z << "\n";
 }
 Vector Vector::normalize()
 {
@@ -60,7 +60,10 @@ double Vector::length()
 {
     return sqrt(pow(this->x, 2) + pow(this->y, 2) + pow(this->z, 2));
 }
-
+Vector null()
+{
+    return Vector(0, 0, 0);
+}
 double distance(Vector v, Vector u)
 {
     return sqrt(pow((v.x - u.x), 2) +

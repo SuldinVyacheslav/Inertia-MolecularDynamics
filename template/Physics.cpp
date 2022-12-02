@@ -5,7 +5,7 @@
 
 double maxwell(double V)
 {
-    double m = 6.63 * pow(10, -26);
+    double m = ARGON_MASS;
     int T = 300;
     double k = 1.38 * pow(10, -23);
     double A1 = (1 / sqrt(M_PI)) * sqrt(m / (2 * k * T));
@@ -23,7 +23,7 @@ double get_maxwell_dist()
 {
     double sum = 0;
     std::vector<double> vel;
-    for (int i = 0; i < 66 * 18; i++)
+    for (int i = 0; i < 1000; i++)
     {
         double prob = maxwell(i);
         vel.push_back(prob);
@@ -48,21 +48,21 @@ double lennard_jones(double r)
 
 Vector calc_inertia_center(std::vector<Molecule> molecules)
 {
-    Vector Center = Vector(0, 0, 0);
+    Vector center = null();
     double mass = 0;
     for (int i = 0; i < molecules.size(); i++)
     {
-        Center += (molecules[i].coordinates * molecules[i].mass);
+        center += (molecules[i].coordinates.cur * molecules[i].mass);
         mass += molecules[i].mass;
     }
-    return Center / mass;
+    return center / mass;
 }
 
-pair<double, Vector> calc_periodic_dist(Vector target, Vector to_copy)
+pair<double, Vector> calc_periodic_dist(Molecule tarMol, Molecule copMol)
 {
+    Vector target = tarMol.coordinates.cur;
+    Vector to_copy = copMol.coordinates.cur;
     Vector dummy = to_copy;
-    // target.print();
-    // to_copy.print();
     for (int n = -1; n <= 1; n++)
     {
         for (int m = -1; m <= 1; m++)
@@ -75,11 +75,12 @@ pair<double, Vector> calc_periodic_dist(Vector target, Vector to_copy)
 
                 double d = distance(dummy, target);
 
-                if (d < 2 * SIGMA)
+                if (d < FORCE_RADIUS)
                 {
                     return pair<double, Vector>(d, Vector(target.x - dummy.x,
                                                           target.y - dummy.y,
-                                                          target.z - dummy.z));
+                                                          target.z - dummy.z)
+                                                       .normalize());
                 }
 
                 dummy = to_copy;
@@ -89,26 +90,25 @@ pair<double, Vector> calc_periodic_dist(Vector target, Vector to_copy)
     return pair<double, Vector>(0, Vector(0, 0, 0));
 }
 
-Vector calc_iner_force(std::vector<Molecule> first, Vector c, Vector cn)
+Vector calc_iner_force(std::vector<Molecule> first, Delta iner)
 {
     Vector force;
     for (int i = 0; i < first.size(); i++)
     {
-        Vector M = first[i].force * distance(c, first[i].coordinates) - first[i].force_prev * distance(cn, first[i].coordinates_prev);
-        // cout << "_______________" << endl;
-        // first[i].force.print();
-        // first[i].force_prev.print();
-        // first[i].coordinates.print();
-        // first[i].coordinates_prev.print();
-        // c.print();
-        // cn.print();
+        Vector M = first[i].force.cur * distance(iner.cur, first[i].coordinates.cur) -
+                   first[i].force.prev * distance(iner.prev, first[i].coordinates.prev);
+        
+        Delta coor = first[i].coordinates;
         if (i == 0)
-            force = Vector(M.x * (1 / (first[i].coordinates_prev.x - first[i].coordinates.x)),
-                                  M.y * (1 / (first[i].coordinates_prev.y - first[i].coordinates.y)),
-                                  M.z * (1 / (first[i].coordinates_prev.z - first[i].coordinates.z)));
-        first[i].force +=  Vector(M.x * (1 / (first[i].coordinates_prev.x - first[i].coordinates.x)),
-                                  M.y * (1 / (first[i].coordinates_prev.y - first[i].coordinates.y)),
-                                  M.z * (1 / (first[i].coordinates_prev.z - first[i].coordinates.z)));
+        {
+            force = Vector(M.x / (coor.prev.x - coor.cur.x),
+                           M.y / (coor.prev.y - coor.cur.y),
+                           M.z / (coor.prev.z - coor.cur.z));
+            //cout << force.length() / first[i].force.cur.length() << endl;
+        }
+        first[i].force.cur += Vector(M.x / (coor.prev.x - coor.cur.x),
+                                     M.y / (coor.prev.y - coor.cur.y),
+                                     M.z / (coor.prev.z - coor.cur.z));
     }
     return force;
 }

@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 
-#define LIST_OF_GRAPHS \
+#define LIST_OF_WINDOW \
     X(main)            \
     X(kinetic)         \
     X(force)
@@ -12,7 +12,7 @@ public:
 
 
 #define X(name) sf::RenderWindow name;
-    LIST_OF_GRAPHS
+    LIST_OF_WINDOW
 #undef X
 
     void add_window(sf::RenderWindow *window, sf::String title);

@@ -20,3 +20,4 @@ public:
 };
 
 double distance(Vector v, Vector u);
+Vector null();

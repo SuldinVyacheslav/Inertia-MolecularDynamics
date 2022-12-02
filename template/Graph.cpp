@@ -2,35 +2,33 @@
 
 #include <vector>
 
-Graph::Graph(sf::Color color): color(color)
+Graph::Graph(sf::Color color) : color(color)
 {
-    values.reserve(1000);
+    values.reserve(X);
 }
 
 std::vector<double> values;
 
 void Graph::update_graph(sf::RenderWindow *window, double new_value)
 {
-    if (values.size() < 1000)
+    if (values.size() < X)
     {
         values.push_back(new_value);
-        top = new_value > top ? new_value : top;
     }
     else
     {
-        top = 0;
         for (int i = 0; i < values.size(); i++)
         {
             values[i] = values[i + 1];
-            top = values[i] > top ? values[i] : top;
         }
         values[values.size()] = new_value;
     }
+    top = new_value > top ? new_value : top;
     for (int i = values.size(); i > 1; i--)
     {
         draw(window, 2, color,
              i,
-             (values[i] / top*0.75) * 1000, 1);
+             (values[i] / top * 0.75) * Y, 1);
     }
 }
 

@@ -6,28 +6,39 @@
 #include "Vector.h"
 #include "Constants.h"
 
+
+class Delta
+{
+public:
+    Delta(Vector prev, Vector cur);
+
+    Vector prev;
+
+    Vector cur;
+
+    Vector delta();
+};
+
 class Molecule
 {
 public:
     Molecule(Vector coor, Vector vel);
-    void Base();
-    void SemiStep();
-    void Verlet();
 
-    void Periodic();
-    void Collide(Molecule &with);
+    void base();
+    void semiStep();
+    void verlet();
+
+    void periodic();
+    void collide(Molecule &with);
     
-    Vector coordinates;
+    Delta coordinates;
+
+    Delta force;
 
     Vector velocity;
 
-    Vector force;
+    double mass = ARGON_MASS;
 
-    Vector force_prev;
-
-    Vector coordinates_prev;
-
-    double mass = MASS;
-
-    double radius = 1;
+    double radius = ARGON_RADIUS;
 };
+
