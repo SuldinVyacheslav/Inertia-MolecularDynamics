@@ -95,19 +95,20 @@ Vector calc_iner_force(std::vector<Molecule> &first, Delta iner)
     Vector force;
     for (int i = 0; i < first.size(); i++)
     {
-        Vector dM = (iner.cur - first[i].coordinates.cur) | first[i].force.cur - (iner.prev - first[i].coordinates.prev) | first[i].force.prev;
+        Delta dist = Delta(iner.cur - first[i].coordinates.cur,iner.prev - first[i].coordinates.prev);
+        Vector dM = dist.cur | first[i].force.cur - dist.prev | first[i].force.prev;
 
         Delta coor = first[i].coordinates;
         if (i == 0)
         {
-            force = Vector(dM.x / (coor.prev.x - coor.cur.x),
-                           dM.y / (coor.prev.y - coor.cur.y),
-                           dM.z / (coor.prev.z - coor.cur.z));
+            force = Vector(dM.x / (dist.cur.x - dist.prev.x),
+                                     dM.y / (dist.cur.y - dist.prev.y),
+                                     dM.z / (dist.cur.z - dist.prev.z));
             
         }
-        first[i].force.cur += Vector(dM.x / (coor.prev.x - coor.cur.x),
-                                     dM.y / (coor.prev.y - coor.cur.y),
-                                     dM.z / (coor.prev.z - coor.cur.z));
+        first[i].force.cur += Vector(dM.x / (dist.cur.x - dist.prev.x),
+                                     dM.y / (dist.cur.y - dist.prev.y),
+                                     dM.z / (dist.cur.z - dist.prev.z));
     }
     return force;
 }
