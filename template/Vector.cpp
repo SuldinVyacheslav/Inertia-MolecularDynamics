@@ -44,7 +44,12 @@ Vector &Vector::operator-()
     z = -z;
     return *this;
 }
-
+Vector Vector::operator|(Vector v)
+{
+    return Vector(this->y * v.z - this->z * v.y,
+                  this->z * v.x - this->x * v.z,
+                  this->x * v.y - this->y * v.x);
+}
 void Vector::print()
 {
     cout << x << " " << y << " " << z << "\n";

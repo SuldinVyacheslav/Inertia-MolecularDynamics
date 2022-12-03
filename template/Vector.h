@@ -11,6 +11,7 @@ public:
     Vector operator+(Vector v);
     Vector operator-(Vector v);
     Vector operator*(double l);
+    Vector operator|(Vector v);
     Vector operator/(double l);
     Vector& operator+=(Vector v);
     Vector& operator-();
