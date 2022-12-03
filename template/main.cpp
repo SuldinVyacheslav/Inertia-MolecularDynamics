@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
                  molecules[i].coordinates.cur.x,
                  molecules[i].coordinates.cur.y, SCALE / 1.01);
         }
-        
+
         draw(&visualization.main, 4, sf::Color::Red,
              inertion.prev.x - (inertion.cur.x - inertion.prev.x) * 1000,
              inertion.prev.y - (inertion.cur.y - inertion.prev.y) * 1000, SCALE);
@@ -161,40 +161,40 @@ int main(int argc, char *argv[])
         // }
 
         calc_force(molecules);
-        /*
-        int d = 0;
-        Vector forc;
-        Vector M = molecules[0].force.cur * distance(inertion.cur, molecules[0].coordinates.cur) -
-                   molecules[0].force.prev * distance(inertion.prev, molecules[0].coordinates.prev);
 
-        cout << "M: ";
-        M.print();
-        Delta coor = molecules[0].coordinates;
-        cout << "prev coord: ";
-        coor.prev.print();
-        cout << "cur coord: ";
-        coor.cur.print();
+        // int d = 0;
+        // Vector forc;
+        // Vector M = molecules[0].force.cur * distance(inertion.cur, molecules[0].coordinates.cur) -
+        //            molecules[0].force.prev * distance(inertion.prev, molecules[0].coordinates.prev);
 
-        cout << "delta x" << (coor.prev.x - coor.cur.x) << endl;
+        // cout << "M: ";
+        // M.print();
+        // Delta cool = molecules[0].coordinates;
+        // cout << "prev coord: ";
+        // cool.prev.print();
+        // cout << "cur coord: ";
+        // cool.cur.print();
 
-        forc = Vector(M.x / (coor.prev.x - coor.cur.x),
-                      M.y / (coor.prev.y - coor.cur.y),
-                      M.z / (coor.prev.z - coor.cur.z));
-        cout << "new force: ";
-        forc.print();
-        cout << "force before: ";
-        molecules[0].force.cur.print();
-        molecules[0].force.cur += Vector(M.x / (coor.prev.x - coor.cur.x),
-                                         M.y / (coor.prev.y - coor.cur.y),
-                                         M.z / (coor.prev.z - coor.cur.z));
-        cout << "force after : ";
-        molecules[0].force.cur.print();
-        cout << "velocity: ";
-        molecules[0].velocity.print();
-        cout << "______________\n";
-        scanf("%d", &d);
-        */
-        calc_iner_force(molecules, inertion);
+        // cout << "delta x" << (cool.prev.x - cool.cur.x) << endl;
+
+        // forc = Vector(M.x / (cool.prev.x - cool.cur.x),
+        //               M.y / (cool.prev.y - cool.cur.y),
+        //               M.z / (cool.prev.z - cool.cur.z));
+        // cout << "new force: ";
+        // forc.print();
+        // cout << "force before: ";
+        // molecules[0].force.cur.print();
+        // molecules[0].force.cur += forc;
+        // cout << "force after : ";
+        // molecules[0].force.cur.print();
+        // cout << "velocity: ";
+        // molecules[0].velocity.print();
+        // cout << "______________\n";
+        // scanf("%d", &d);
+
+        Vector prev = calc_iner_force(molecules, inertion);
+        
+        //(molecules[0].force.cur - prev).print();
 
         double velocity = 0;
         for (int i = 0; i < molecules.size(); i++)
@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
         }
         Vector abc = molecules[0].force.cur; // - iner_force;
 
-        // iner.update_graph(&visualization.force, iner_force.length());
+        iner.update_graph(&visualization.force, prev.length());
         kinetic_e.update_graph(&visualization.kinetic, velocity);
         // force_iner.update_graph(&visualization.force, (molecules[0].force.cur + iner_force).length());
         force.update_graph(&visualization.force, molecules[0].force.cur.length());

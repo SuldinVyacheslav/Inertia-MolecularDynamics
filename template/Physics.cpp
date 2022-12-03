@@ -90,25 +90,24 @@ pair<double, Vector> calc_periodic_dist(Molecule tarMol, Molecule copMol)
     return pair<double, Vector>(0, Vector(0, 0, 0));
 }
 
-Vector calc_iner_force(std::vector<Molecule> first, Delta iner)
+Vector calc_iner_force(std::vector<Molecule> &first, Delta iner)
 {
     Vector force;
     for (int i = 0; i < first.size(); i++)
     {
-        Vector M = first[i].force.cur * distance(iner.cur, first[i].coordinates.cur) -
-                   first[i].force.prev * distance(iner.prev, first[i].coordinates.prev);
-        
+        Vector dM = (iner.cur - first[i].coordinates.cur) | first[i].force.cur - (iner.prev - first[i].coordinates.prev) | first[i].force.prev;
+
         Delta coor = first[i].coordinates;
         if (i == 0)
         {
-            force = Vector(M.x / (coor.prev.x - coor.cur.x),
-                           M.y / (coor.prev.y - coor.cur.y),
-                           M.z / (coor.prev.z - coor.cur.z));
-            //cout << force.length() / first[i].force.cur.length() << endl;
+            force = Vector(dM.x / (coor.prev.x - coor.cur.x),
+                           dM.y / (coor.prev.y - coor.cur.y),
+                           dM.z / (coor.prev.z - coor.cur.z));
+            
         }
-        first[i].force.cur += Vector(M.x / (coor.prev.x - coor.cur.x),
-                                     M.y / (coor.prev.y - coor.cur.y),
-                                     M.z / (coor.prev.z - coor.cur.z));
+        first[i].force.cur += Vector(dM.x / (coor.prev.x - coor.cur.x),
+                                     dM.y / (coor.prev.y - coor.cur.y),
+                                     dM.z / (coor.prev.z - coor.cur.z));
     }
     return force;
 }
