@@ -63,7 +63,6 @@ void Check(double &cor)
 {
     if (cor >= SIDE_OF_SYSTEM || cor <= 0)
     {
-        std::cout << "JUMP\n";
         cor += (cor <= 0 ? 1 : -1) * SIDE_OF_SYSTEM;
     }
 }
