@@ -1,9 +1,9 @@
-#include <math.h>
 #include "Constants.h"
+#include <math.h>
 
 const int ACC = 500;
 
-const int MOL_SIDE = 4;
+const int MOL_SIDE = 5;
 const int NUMBER_OF_MOLECULES = MOL_SIDE * MOL_SIDE * MOL_SIDE;
 const double DELTA_T = pow(10, -15);
 const int X = 1000;
