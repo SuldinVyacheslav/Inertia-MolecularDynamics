@@ -11,13 +11,15 @@ Standard modeling tools have been implemented:
 * Maxwell velocity distribution  
 * Periodic boundary conditions.  
 
-The mechanism for constructing graphs of the researchng quantities is also implemented.
-With the help of the above algorithms and formula for calculating the moment, influence on the motion of Brownian particles , caused by the moment of the inertia center is obtained.
+The mechanism for constructing graphs of the researching quantities is also implemented.
+With the help of the above algorithms and formula for calculating the moment, influence on the motion of Brownian particles, caused by the moment of the inertia center is obtained.
 
 ## Demonstration
+
 <p align="center">
       <img src="https://i.ibb.co/jGYJjqZ/left-online-video-cutter-com.gif">
 </p>
+
 
 ## Dependencies
 * SFML 2.0+ development headers and library
