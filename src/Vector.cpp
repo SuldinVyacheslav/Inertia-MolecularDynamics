@@ -1,11 +1,9 @@
+// Copyright 2022 Suldin Vyacheslav
+
+#include "Vector.h"
+#include "Constants.h"
 #include <iostream>
 #include <math.h>
-#include <string.h>
-
-#include "Constants.h"
-#include "Vector.h"
-
-using namespace std;
 
 Vector::Vector() {}
 Vector::Vector(double x, double y, double z) : x(x), y(y), z(z) {}
@@ -35,7 +33,7 @@ Vector Vector::operator|(Vector v) {
                 this->x * v.y - this->y * v.x);
 }
 void Vector::print(char name[]) {
-  cout << name << ": " << x << " " << y << " " << z << "\n";
+  std::cout << name << ": " << x << " " << y << " " << z << "\n";
 }
 Vector Vector::normalize() {
   double len = this->length();

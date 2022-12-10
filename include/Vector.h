@@ -1,8 +1,7 @@
-#include <iostream>
-
-#pragma once
+// Copyright 2022 Suldin Vyacheslav
 
 class Vector {
+
 public:
   Vector();
   Vector(double x, double y, double z);
@@ -14,10 +13,11 @@ public:
   Vector operator/(double l);
   Vector &operator+=(Vector v);
   Vector &operator-();
-  void print(char name[]);
+  void print(char* name);
   Vector normalize();
   double length();
 };
 
 double distance(Vector v, Vector u);
+
 Vector null();

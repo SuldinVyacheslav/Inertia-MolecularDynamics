@@ -1,20 +1,17 @@
-#include <algorithm>
-#include <iostream>
-#include <math.h>
-#include <string.h>
+// Copyright 2022 Suldin Vyacheslav
 
-#include "Constants.h"
 #include "Graph.h"
 #include "Physics.h"
-#include "Vector.h"
 #include "Visualization.h"
 
-using namespace std;
+using std::vector;
+using std::pair;
 
 bool comp(Molecule v, Molecule u) {
   return v.coordinates.cur.z < u.coordinates.cur.z;
 }
-void setup_positions(vector<Molecule> &molecules) {
+
+void setup_positions(vector<Molecule> *molecules) {
   for (int i = 1; i < MOL_SIDE + 1; i++) {
     for (int j = 1; j < MOL_SIDE + 1; j++) {
       for (int k = 1; k < MOL_SIDE + 1; k++) {
@@ -22,7 +19,7 @@ void setup_positions(vector<Molecule> &molecules) {
             Vector((i + 0.5) * DIST, (j + 0.5) * DIST, (k + 0.5) * DIST),
             get_maxwell_vector());
 
-        molecules.push_back(to_add);
+        molecules->push_back(to_add);
       }
     }
   }
@@ -105,12 +102,11 @@ int main(int argc, char *argv[]) {
   // {
   //     fp.push_back(Vector(0, 0, 0));
   // }
-  Delta inertion = Delta(null(), null());
+  Delta inertion = Delta();
 
-  setup_positions(molecules);
+  setup_positions(&molecules);
 
   while (visualization.main.isOpen()) {
-
     visualization.is_close();
 
     // sort(molecules.begin(), molecules.end(), comp);
@@ -187,8 +183,9 @@ int main(int argc, char *argv[]) {
     // cout << "______________\n";
     // scanf("%d", &d);
 
-    Vector prev = calc_iner_force(molecules, inertion);
+    calc_iner_force(&molecules, inertion);
 
+    molecules[0].iner_force.cur.print("INERTIA");
     //(molecules[0].force.cur - prev).print();
 
     double velocity = 0;
@@ -198,7 +195,7 @@ int main(int argc, char *argv[]) {
     }
     Vector abc = molecules[0].force.cur; // - iner_force;
 
-    iner.update_graph(&visualization.force, prev.length());
+    //iner.update_graph(&visualization.force, prev.length());
     kinetic_e.update_graph(&visualization.kinetic, velocity);
     // force_iner.update_graph(&visualization.force, (molecules[0].force.cur +
     // iner_force).length());
@@ -210,7 +207,9 @@ int main(int argc, char *argv[]) {
 
     inertion.cur = calc_inertia_center(molecules);
     for (int i = 0; i < molecules.size(); i++) {
+      molecules[i].force.cur += molecules[i].iner_force.cur;
       molecules[i].semiStep();
+      molecules[i].force.cur += molecules[i].iner_force.cur;
     }
     visualization.display();
   }

@@ -1,3 +1,5 @@
+// Copyright 2022 Suldin Vyacheslav
+
 #include <SFML/Graphics.hpp>
 
 #define LIST_OF_WINDOW                                                         \
@@ -6,9 +8,12 @@
   X(force)
 
 class App {
+
 public:
   App();
+
   void setup(int argc, char *argv[]);
+
 #define X(name) sf::RenderWindow name;
   LIST_OF_WINDOW
 #undef X

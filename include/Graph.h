@@ -1,13 +1,13 @@
+// Copyright 2022 Suldin Vyacheslav
+
+#ifndef INCLUDE_GRAPH_H_
+#define INCLUDE_GRAPH_H_
+
 #include "Constants.h"
-#include "Vector.h"
-#include "math.h"
 #include <SFML/Graphics.hpp>
-#include <iostream>
-#include <stdlib.h>
-#include <string.h>
-#include <vector>
 
 class Graph {
+
 public:
   Graph(sf::Color color);
 
@@ -22,3 +22,5 @@ public:
 
 void draw(sf::RenderWindow *window, float radius, sf::Color color, double x,
           double y, double scale);
+
+#endif

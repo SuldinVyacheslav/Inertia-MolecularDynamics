@@ -1,8 +1,9 @@
+// Copyright 2022 Suldin Vyacheslav
+
+#include "Visualization.h"
+#include "Constants.h"
 #include <iostream>
 #include <string.h>
-
-#include "Constants.h"
-#include "Visualization.h"
 
 void App::setup(int argc, char *argv[]) {
   for (int i = 0; i < argc; i++) {

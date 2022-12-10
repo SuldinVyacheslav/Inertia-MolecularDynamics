@@ -1,8 +1,14 @@
-#include "Molecule.h"
+// Copyright 2022 Suldin Vyacheslav
 
+#include "Molecule.h"
 #include <vector>
 
 Delta::Delta(Vector prev, Vector cur) : prev(prev), cur(cur) {}
+
+Delta::Delta() {
+  prev = null();
+  cur = null();
+}
 
 Molecule::Molecule(Vector coor, Vector vel)
     : coordinates(Delta(null(), coor)), velocity(vel),
@@ -48,23 +54,27 @@ void Molecule::verlet() {
 void Molecule::base() {
   coordinates.prev = coordinates.cur;
 
-  coordinates.cur += velocity * DELTA_T; // X' = X + V * dT
+  coordinates.cur += velocity * DELTA_T;
 
-  velocity += (force.cur / mass) * DELTA_T; // V' = V + a * dT   where a = F/m
+  velocity += (force.cur / mass) * DELTA_T;
 
-  periodic(); // V'
+  periodic();
 }
 
-void Check(double &cor) {
-  if (cor >= SIDE_OF_SYSTEM || cor <= 0) {
-    // std::cout << "JUMP\n";
-    cor += (cor <= 0 ? 1 : -1) * SIDE_OF_SYSTEM;
+void Check(double *cor) {
+  if (*cor >= SIDE_OF_SYSTEM || *cor <= 0) {
+    *cor += (*cor <= 0 ? 1 : -1) * SIDE_OF_SYSTEM;
   }
 }
+
 void Molecule::periodic() {
-  Check(coordinates.cur.x);
-  Check(coordinates.cur.y);
-  Check(coordinates.cur.z);
+  Check(&coordinates.cur.x);
+  Check(&coordinates.cur.y);
+  Check(&coordinates.cur.z);
+}
+
+void Molecule::set_iner(const Vector &iner_force) {
+  this->iner_force.cur = iner_force;
 }
 
 Vector getNorm(Vector v, Vector u) {

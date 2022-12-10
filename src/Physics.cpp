@@ -1,5 +1,4 @@
-#include <math.h>
-#include <vector>
+// Copyright 2022 Suldin Vyacheslav
 
 #include "Physics.h"
 
@@ -16,6 +15,7 @@ Vector get_maxwell_vector() {
 }
 
 double get_maxwell_dist() {
+  static unsigned int seed = time(NULL);
   double sum = 0;
   std::vector<double> vel;
   for (int i = 0; i < 1000; i++) {
@@ -23,15 +23,15 @@ double get_maxwell_dist() {
     vel.push_back(prob);
     sum += prob;
   }
-  double b = rand() % 100;
+  double b = rand_r(&seed) % 100;
 
   int i = 0;
   double cur = 0;
 
-  for (i = 0; i < (int)vel.size() && b > cur * 100; i++) {
+  for (i = 0; i < static_cast<int>(vel.size()) && b > cur * 100; i++) {
     cur += vel[i] / sum;
   }
-  return (rand() % 2 == 0 ? -1 : 1) * i;
+  return (rand_r(&seed) % 2 == 0 ? -1 : 1) * i;
 }
 
 double lennard_jones(double r) {
@@ -41,16 +41,14 @@ double lennard_jones(double r) {
 Vector calc_inertia_center(std::vector<Molecule> molecules) {
   Vector center = null();
   double mass = 0;
-  for (int i = 0; i < (int)molecules.size(); i++) {
+  for (int i = 0; i < static_cast<int>(molecules.size()); i++) {
     center += (molecules[i].coordinates.cur * molecules[i].mass);
     mass += molecules[i].mass;
   }
-  center.print("center");
-  cout << mass << " <mass\n";
   return center / mass;
 }
 
-pair<double, Vector> calc_periodic_dist(Molecule tarMol, Molecule copMol) {
+std::pair<double, Vector> calc_periodic_dist(Molecule tarMol, Molecule copMol) {
   Vector target = tarMol.coordinates.cur;
   Vector to_copy = copMol.coordinates.cur;
   Vector dummy = to_copy;
@@ -64,7 +62,7 @@ pair<double, Vector> calc_periodic_dist(Molecule tarMol, Molecule copMol) {
         double d = distance(dummy, target);
 
         if (d < FORCE_RADIUS) {
-          return pair<double, Vector>(
+          return std::pair<double, Vector>(
               d,
               Vector(target.x - dummy.x, target.y - dummy.y, target.z - dummy.z)
                   .normalize());
@@ -74,25 +72,22 @@ pair<double, Vector> calc_periodic_dist(Molecule tarMol, Molecule copMol) {
       }
     }
   }
-  return pair<double, Vector>(0, Vector(0, 0, 0));
+  return std::pair<double, Vector>(0, Vector(0, 0, 0));
 }
 
-Vector calc_iner_force(std::vector<Molecule> &first, Delta iner) {
-  Vector force;
-  for (int i = 0; i < first.size(); i++) {
-    Delta dist = Delta(iner.cur - first[i].coordinates.cur,
-                       iner.prev - first[i].coordinates.prev);
-    Vector dM = dist.cur | first[i].force.cur - dist.prev | first[i].force.prev;
+void calc_iner_force(std::vector<Molecule> *molecules, Delta iner) {
+  for (int i = 0; i < molecules->size(); i++) {
+    Delta dist = Delta(iner.cur - (*molecules)[i].coordinates.cur,
+                       iner.prev - (*molecules)[i].coordinates.prev);
 
-    Delta coor = first[i].coordinates;
-    if (i == 0) {
-      force = Vector(dM.x / (dist.cur.x - dist.prev.x),
-                     dM.y / (dist.cur.y - dist.prev.y),
-                     dM.z / (dist.cur.z - dist.prev.z));
-    }
-    first[i].force.cur += Vector(dM.x / (dist.cur.x - dist.prev.x),
-                                 dM.y / (dist.cur.y - dist.prev.y),
-                                 dM.z / (dist.cur.z - dist.prev.z));
+    Vector dM = (dist.cur | (*molecules)[i].force.cur) -
+                (dist.prev | (*molecules)[i].force.prev);
+
+    Delta coor = (*molecules)[i].coordinates;
+
+    (*molecules)[i].iner_force.cur = Vector(
+        (dist.cur.x - dist.prev.x) == 0 ? 0 : dM.x / (dist.cur.x - dist.prev.x),
+        (dist.cur.y - dist.prev.y) == 0 ? 0 : dM.y / (dist.cur.y - dist.prev.y),
+        (dist.cur.z - dist.prev.z) == 0 ? 0 : dM.z / (dist.cur.z - dist.prev.z));
   }
-  return force;
 }

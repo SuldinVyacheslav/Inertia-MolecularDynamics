@@ -1,26 +1,27 @@
-#include "Graph.h"
+// Copyright 2022 Suldin Vyacheslav
 
-#include <vector>
+#include "Graph.h"
 
 Graph::Graph(sf::Color color) : color(color) { values.reserve(X); }
 
 std::vector<double> values;
 
 void Graph::update_graph(sf::RenderWindow *window, double new_value) {
+  int size = static_cast<int>(values.size());
   top = 0;
-  if ((int)values.size() < X) {
+  if (size < X) {
     values.push_back(new_value);
     top += new_value;
   } else {
-    for (int i = 0; i < (int)values.size(); i++) {
+    for (int i = 0; i < size; i++) {
       values[i] = values[i + 1];
       top += values[i];
     }
-    values[values.size()] = new_value;
+    values[size] = new_value;
     top += new_value;
   }
   top /= X;
-  for (int i = values.size(); i > 1; i--) {
+  for (int i = size; i > 1; i--) {
     draw(window, 2, color, i, (values[i] / top * 0.75) * Y, 1);
   }
 }
