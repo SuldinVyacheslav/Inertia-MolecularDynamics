@@ -7,14 +7,13 @@
 using std::pair;
 using std::vector;
 
-
 #define EPS 0.00001
 
-bool d_eq(double A, double B) {
-  return (fabs(A - B) < EPS);
-}
+bool d_eq(double A, double B) { return (fabs(A - B) < EPS); }
 
-bool Vector_eq(Vector v, Vector u) { return d_eq(v.x, u.x) && d_eq(v.y, u.y) && d_eq(v.z, u.z); }
+bool Vector_eq(Vector v, Vector u) {
+  return d_eq(v.x, u.x) && d_eq(v.y, u.y) && d_eq(v.z, u.z);
+}
 
 TEST(Laws, kinetic) {
   vector<Molecule> molecules;

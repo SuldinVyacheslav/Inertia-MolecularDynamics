@@ -11,7 +11,7 @@
 #include "Vector.h"
 
 class Delta {
- public:
+public:
   Delta();
   Delta(Vector prev, Vector cur);
   Vector prev;
@@ -20,7 +20,7 @@ class Delta {
 };
 
 class Molecule {
- public:
+public:
   Molecule(Vector coor, Vector vel);
   void base();
   void semi_step();
@@ -35,4 +35,4 @@ class Molecule {
   double radius;
 };
 
-#endif  // INCLUDE_MOLECULE_H_
+#endif // INCLUDE_MOLECULE_H_

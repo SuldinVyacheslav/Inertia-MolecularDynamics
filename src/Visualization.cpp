@@ -30,13 +30,14 @@ App::App() {}
 
 void App::is_close() {
   sf::Event event;
-#define X(name)                                          \
-  {                                                      \
-    sf::Event event;                                     \
-    while (name.pollEvent(event)) {                      \
-      if (event.type == sf::Event::Closed) name.close(); \
-    }                                                    \
-    name.clear(sf::Color::White);                        \
+#define X(name)                                                                \
+  {                                                                            \
+    sf::Event event;                                                           \
+    while (name.pollEvent(event)) {                                            \
+      if (event.type == sf::Event::Closed)                                     \
+        name.close();                                                          \
+    }                                                                          \
+    name.clear(sf::Color::White);                                              \
   }
   LIST_OF_WINDOW
 #undef X

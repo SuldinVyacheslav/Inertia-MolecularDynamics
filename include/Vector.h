@@ -1,13 +1,13 @@
 // Copyright 2022 Suldin Vyacheslav
-#ifndef INCLUDE_VECTOR_
-#define INCLUDE_VECTOR_
+#ifndef INCLUDE_VECTOR_H_
+#define INCLUDE_VECTOR_H_
 
 class Vector {
- public:
+public:
   Vector();
   Vector(double x, double y, double z);
   double x, y, z;
-  Vector operator+(Vector v) ;
+  Vector operator+(Vector v);
   Vector operator-(Vector v);
   Vector operator*(double l) const;
   Vector operator|(Vector v);
@@ -23,4 +23,4 @@ double distance(Vector v, Vector u);
 
 Vector null();
 
-#endif  // INCLUDE_VECTOR_
+#endif // INCLUDE_VECTOR_H_
