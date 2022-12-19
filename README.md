@@ -5,7 +5,6 @@
 ![license](https://img.shields.io/github/license/SuldinVyacheslav/Inertia-MolecularDynamics)
 
 
-
 ## Lennard Jones simulation /w inertia moment effect
 
 This repository aims to be convenient for solving molecular dynamics problems. 
