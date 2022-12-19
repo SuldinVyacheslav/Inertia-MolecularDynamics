@@ -10,7 +10,7 @@
   X(force)
 
 class App {
-public:
+ public:
   App();
 
   void setup(int argc, char *argv[]);
@@ -28,4 +28,4 @@ public:
   void add_if(const char *name, char *cmd, sf::RenderWindow *window);
 };
 
-#endif // INCLUDE_VISUALIZATION_H_
+#endif  // INCLUDE_VISUALIZATION_H_

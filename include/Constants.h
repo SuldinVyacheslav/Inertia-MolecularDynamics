@@ -17,4 +17,4 @@ extern const double DIST;
 extern const double SIDE_OF_SYSTEM;
 extern const double ARGON_RADIUS;
 
-#endif // INCLUDE_CONSTANTS_H_
+#endif  // INCLUDE_CONSTANTS_H_

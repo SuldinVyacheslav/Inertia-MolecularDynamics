@@ -20,4 +20,4 @@ extern std::pair<double, Vector> calc_periodic_dist(Molecule tarMol,
 extern void calc_iner_force(std::vector<Molecule> *Molecules, Delta iner);
 extern double calculateN(double Temp);
 
-#endif // INCLUDE_PHYSICS_H_
+#endif  // INCLUDE_PHYSICS_H_
