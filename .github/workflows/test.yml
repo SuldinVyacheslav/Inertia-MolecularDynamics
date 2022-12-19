@@ -331,7 +331,3 @@ jobs:
         source: '.'
         exclude: './third_party ./external'
         extensions: 'h,cpp'
-        clangFormatVersion: 14
-        style: chromium
-
-      
