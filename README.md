@@ -1,9 +1,6 @@
 [![Documentation Status](https://readthedocs.org/projects/simulationpracticemd/badge/?version=latest)](https://simulationpracticemd.readthedocs.io/en/latest/?badge=latest)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0fb7c77817fe41368642070f959648b5)](https://www.codacy.com/gh/SuldinVyacheslav/Inertia-MolecularDynamics/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SuldinVyacheslav/practice&amp;utm_campaign=Badge_Grade)
-
-
-![license](https://img.shields.io/github/license/SuldinVyacheslav/Inertia-MolecularDynamics)
-
+[![CI](https://github.com/SuldinVyacheslav/Inertia-MolecularDynamics/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/SuldinVyacheslav/Inertia-MolecularDynamics/actions/workflows/CI.yml)
 
 ## Lennard Jones simulation /w inertia moment effect
 
