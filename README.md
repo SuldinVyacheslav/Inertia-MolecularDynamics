@@ -16,9 +16,8 @@ With the help of the above algorithms and formula for calculating the moment, in
 ## Demonstration
 
 <p align="center">
-
-      <img src="https://i.ibb.co/jGYJjqZ/left-online-video-cutter-com.gif">
-
+      <img src="https://i.ibb.co/MG8sK87/as.png" width=800>
+      https://www.youtube.com/watch?v=ffHDQtUgEuQ
 </p>
 
 ## Dependencies
