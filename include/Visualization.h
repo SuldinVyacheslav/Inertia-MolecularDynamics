@@ -1,15 +1,16 @@
 // Copyright 2022 Suldin Vyacheslav
 
 #include <SFML/Graphics.hpp>
+#ifndef INCLUDE_VISUALIZATION_H_
+#define INCLUDE_VISUALIZATION_H_
 
-#define LIST_OF_WINDOW                                                         \
-  X(main)                                                                      \
-  X(kinetic)                                                                   \
+#define LIST_OF_WINDOW \
+  X(main)              \
+  X(kinetic)           \
   X(force)
 
 class App {
-
-public:
+ public:
   App();
 
   void setup(int argc, char *argv[]);
@@ -26,3 +27,5 @@ public:
 
   void add_if(const char *name, char *cmd, sf::RenderWindow *window);
 };
+
+#endif  // INCLUDE_VISUALIZATION_H_

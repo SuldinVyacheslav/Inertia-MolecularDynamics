@@ -1,6 +1,7 @@
 // Copyright 2022 Suldin Vyacheslav
 
 #include "Molecule.h"
+
 #include <vector>
 
 Delta::Delta(Vector prev, Vector cur) : prev(prev), cur(cur) {}
@@ -11,13 +12,14 @@ Delta::Delta() {
 }
 
 Molecule::Molecule(Vector coor, Vector vel)
-    : coordinates(Delta(null(), coor)), velocity(vel),
+    : coordinates(Delta(null(), coor)),
+      velocity(vel),
       force(Delta(null(), null())) {
   mass = ARGON_MASS;
   radius = ARGON_RADIUS;
 }
 
-void Molecule::semiStep() {
+void Molecule::semi_step() {
   coordinates.prev = coordinates.cur;
 
   Vector acc = force.prev / mass;
@@ -29,10 +31,6 @@ void Molecule::semiStep() {
   acc = force.cur / mass;
 
   velocity = semi_vel + acc * (DELTA_T / 2);
-
-  force.prev = force.cur;
-
-  force.cur = null();
 
   periodic();
 }
@@ -77,35 +75,3 @@ void Molecule::set_iner(const Vector &iner_force) {
   this->iner_force.cur = iner_force;
 }
 
-Vector getNorm(Vector v, Vector u) {
-  return Vector(v.y * u.z - v.z * u.y, -(v.x * u.z - v.x * v.z),
-                v.x * u.y - u.x * v.x)
-      .normalize();
-}
-Vector getProj(Vector b, Vector a) { return b * (a.x + a.y + a.z); }
-
-// Vector toOld(Vector v, std::vector<Vector> A)
-// {
-//     return Vector(A[0].x + A[1].x + A[2].x,
-//                   A[0].y + A[1].y + A[2].y,
-//                   A[0].z + A[1].z + A[2].z);
-// }
-// void Molecule::collide(Molecule &with)
-// {
-//     // Vector oX = (with.coordinates - this->coordinates).normalize();
-//     // Vector oZ = getNorm(this->velocity, with.velocity);
-//     // Vector oY = getNorm(oX, oZ);
-//     // Vector Vx = getProj(oX, this->velocity);
-//     // Vector Ux = getProj(oX, with.velocity);
-//     // Vector newVx = (Vx * (this->mass - with.mass) + Ux * 2 * with.mass) /
-//     (this->mass + with.mass);
-//     // Vector newUx = (Vx * 2 * this->mass + Ux * (with.mass - this->mass)) /
-//     (this->mass + with.mass);
-
-//     // std::vector<Vector> A = {Vector(oX.x, oX.y, oX.z), Vector(oY.x, oY.y,
-//     oY.z), Vector(oZ.x, oZ.y, oZ.z)};
-//     // this->velocity = toOld(Vector(newVx.x, getProj(oY, this->velocity).y,
-//     0), A);
-//     // with.velocity = toOld(Vector(newUx.x, getProj(oZ, this->velocity).y,
-//     0), A);
-// }

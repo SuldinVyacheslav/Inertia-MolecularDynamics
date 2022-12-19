@@ -3,7 +3,6 @@
 #ifndef INCLUDE_CONSTANTS_H_
 #define INCLUDE_CONSTANTS_H_
 
-extern const int ACC;
 extern const int MOL_SIDE;
 extern const int NUMBER_OF_MOLECULES;
 extern const double DELTA_T;
@@ -18,4 +17,4 @@ extern const double DIST;
 extern const double SIDE_OF_SYSTEM;
 extern const double ARGON_RADIUS;
 
-#endif
+#endif  // INCLUDE_CONSTANTS_H_

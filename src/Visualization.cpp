@@ -1,9 +1,12 @@
 // Copyright 2022 Suldin Vyacheslav
 
 #include "Visualization.h"
-#include "Constants.h"
-#include <iostream>
+
 #include <string.h>
+
+#include <iostream>
+
+#include "Constants.h"
 
 void App::setup(int argc, char *argv[]) {
   for (int i = 0; i < argc; i++) {
@@ -27,14 +30,13 @@ App::App() {}
 
 void App::is_close() {
   sf::Event event;
-#define X(name)                                                                \
-  {                                                                            \
-    sf::Event event;                                                           \
-    while (name.pollEvent(event)) {                                            \
-      if (event.type == sf::Event::Closed)                                     \
-        name.close();                                                          \
-    }                                                                          \
-    name.clear(sf::Color::White);                                              \
+#define X(name)                                          \
+  {                                                      \
+    sf::Event event;                                     \
+    while (name.pollEvent(event)) {                      \
+      if (event.type == sf::Event::Closed) name.close(); \
+    }                                                    \
+    name.clear(sf::Color::White);                        \
   }
   LIST_OF_WINDOW
 #undef X

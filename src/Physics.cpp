@@ -1,6 +1,19 @@
 // Copyright 2022 Suldin Vyacheslav
-
 #include "Physics.h"
+
+void setup_positions(std::vector<Molecule>* molecules) {
+  for (int i = 0; i < MOL_SIDE; i++) {
+    for (int j = 0; j < MOL_SIDE; j++) {
+      for (int k = 0; k < MOL_SIDE; k++) {
+        Molecule to_add = Molecule(
+            Vector((i + 0.5) * DIST, (j + 0.5) * DIST, (k + 0.5) * DIST),
+            get_maxwell_vector());
+
+        molecules->push_back(to_add);
+      }
+    }
+  }
+}
 
 double maxwell(double V) {
   double m = ARGON_MASS;
@@ -24,7 +37,6 @@ double get_maxwell_dist() {
     sum += prob;
   }
   double b = rand_r(&seed) % 100;
-
   int i = 0;
   double cur = 0;
 
@@ -38,7 +50,30 @@ double lennard_jones(double r) {
   return 12 * (E / SIGMA) * (pow(SIGMA / r, 13) - pow(SIGMA / r, 7));
 }
 
-Vector calc_inertia_center(std::vector<Molecule> molecules) {
+void calc_force(std::vector<Molecule>* molecules) {
+  for (int i = 0; i < (*molecules).size(); i++) {
+    (*molecules)[i].force.prev = (*molecules)[i].force.cur;
+    (*molecules)[i].force.cur = null();
+  }
+  for (int i = 0; i < (*molecules).size(); i++) {
+    Vector force_sum = Vector(0, 0, 0);
+
+    for (int k = i + 1; k < (*molecules).size(); k++) {
+      std::pair<double, Vector> dist_dir =
+          calc_periodic_dist((*molecules)[i], (*molecules)[k]);
+
+      if (dist_dir.first != 0) {
+        Vector force = dist_dir.second * lennard_jones(dist_dir.first);
+        force_sum += force;
+
+        (*molecules)[k].force.cur += -force;
+      }
+    }
+    (*molecules)[i].force.cur += force_sum;
+  }
+}
+
+Vector calc_inertia_center(const std::vector<Molecule>& molecules) {
   Vector center = null();
   double mass = 0;
   for (int i = 0; i < static_cast<int>(molecules.size()); i++) {
@@ -75,19 +110,18 @@ std::pair<double, Vector> calc_periodic_dist(Molecule tarMol, Molecule copMol) {
   return std::pair<double, Vector>(0, Vector(0, 0, 0));
 }
 
-void calc_iner_force(std::vector<Molecule> *molecules, Delta iner) {
+void calc_iner_force(std::vector<Molecule>* molecules, Delta iner) {
   for (int i = 0; i < molecules->size(); i++) {
-    Delta dist = Delta(iner.cur - (*molecules)[i].coordinates.cur,
-                       iner.prev - (*molecules)[i].coordinates.prev);
+    Delta dist = Delta((*molecules)[i].coordinates.prev - iner.prev,
+                       (*molecules)[i].coordinates.cur - iner.cur);
 
     Vector dM = (dist.cur | (*molecules)[i].force.cur) -
                 (dist.prev | (*molecules)[i].force.prev);
 
     Delta coor = (*molecules)[i].coordinates;
 
-    (*molecules)[i].iner_force.cur = Vector(
-        (dist.cur.x - dist.prev.x) == 0 ? 0 : dM.x / (dist.cur.x - dist.prev.x),
-        (dist.cur.y - dist.prev.y) == 0 ? 0 : dM.y / (dist.cur.y - dist.prev.y),
-        (dist.cur.z - dist.prev.z) == 0 ? 0 : dM.z / (dist.cur.z - dist.prev.z));
+    double dr = (coor.cur - coor.prev).length();
+
+    (*molecules)[i].iner_force.cur = dM / dr;
   }
 }

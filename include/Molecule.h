@@ -3,14 +3,15 @@
 #ifndef INCLUDE_MOLECULE_H_
 #define INCLUDE_MOLECULE_H_
 
-#include "Constants.h"
-#include "Vector.h"
-#include <iostream>
 #include <math.h>
 
-class Delta {
+#include <iostream>
 
-public:
+#include "Constants.h"
+#include "Vector.h"
+
+class Delta {
+ public:
   Delta();
   Delta(Vector prev, Vector cur);
   Vector prev;
@@ -19,14 +20,12 @@ public:
 };
 
 class Molecule {
-
-public:
+ public:
   Molecule(Vector coor, Vector vel);
   void base();
-  void semiStep();
+  void semi_step();
   void verlet();
   void periodic();
-  // void collide(Molecule &with);
   void set_iner(const Vector &inertia_force);
   Delta coordinates;
   Vector velocity;
@@ -36,4 +35,4 @@ public:
   double radius;
 };
 
-#endif
+#endif  // INCLUDE_MOLECULE_H_

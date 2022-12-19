@@ -2,6 +2,8 @@
 
 #include "Graph.h"
 
+#include <vector>
+
 Graph::Graph(sf::Color color) : color(color) { values.reserve(X); }
 
 std::vector<double> values;
@@ -22,7 +24,7 @@ void Graph::update_graph(sf::RenderWindow *window, double new_value) {
   }
   top /= X;
   for (int i = size; i > 1; i--) {
-    draw(window, 2, color, i, (values[i] / top * 0.75) * Y, 1);
+    draw(window, 2, color, i, Y - (values[i] / top * 0.75) * Y, 1);
   }
 }
 
