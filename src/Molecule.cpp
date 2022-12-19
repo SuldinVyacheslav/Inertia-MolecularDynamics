@@ -12,8 +12,7 @@ Delta::Delta() {
 }
 
 Molecule::Molecule(Vector coor, Vector vel)
-    : coordinates(Delta(null(), coor)),
-      velocity(vel),
+    : coordinates(Delta(null(), coor)), velocity(vel),
       force(Delta(null(), null())) {
   mass = ARGON_MASS;
   radius = ARGON_RADIUS;
@@ -74,4 +73,3 @@ void Molecule::periodic() {
 void Molecule::set_iner(const Vector &iner_force) {
   this->iner_force.cur = iner_force;
 }
-

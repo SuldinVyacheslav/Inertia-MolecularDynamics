@@ -1,7 +1,7 @@
 // Copyright 2022 Suldin Vyacheslav
 #include "Physics.h"
 
-void setup_positions(std::vector<Molecule>* molecules) {
+void setup_positions(std::vector<Molecule> *molecules) {
   for (int i = 0; i < MOL_SIDE; i++) {
     for (int j = 0; j < MOL_SIDE; j++) {
       for (int k = 0; k < MOL_SIDE; k++) {
@@ -50,7 +50,7 @@ double lennard_jones(double r) {
   return 12 * (E / SIGMA) * (pow(SIGMA / r, 13) - pow(SIGMA / r, 7));
 }
 
-void calc_force(std::vector<Molecule>* molecules) {
+void calc_force(std::vector<Molecule> *molecules) {
   for (int i = 0; i < (*molecules).size(); i++) {
     (*molecules)[i].force.prev = (*molecules)[i].force.cur;
     (*molecules)[i].force.cur = null();
@@ -73,7 +73,7 @@ void calc_force(std::vector<Molecule>* molecules) {
   }
 }
 
-Vector calc_inertia_center(const std::vector<Molecule>& molecules) {
+Vector calc_inertia_center(const std::vector<Molecule> &molecules) {
   Vector center = null();
   double mass = 0;
   for (int i = 0; i < static_cast<int>(molecules.size()); i++) {
@@ -110,7 +110,7 @@ std::pair<double, Vector> calc_periodic_dist(Molecule tarMol, Molecule copMol) {
   return std::pair<double, Vector>(0, Vector(0, 0, 0));
 }
 
-void calc_iner_force(std::vector<Molecule>* molecules, Delta iner) {
+void calc_iner_force(std::vector<Molecule> *molecules, Delta iner) {
   for (int i = 0; i < molecules->size(); i++) {
     Delta dist = Delta((*molecules)[i].coordinates.prev - iner.prev,
                        (*molecules)[i].coordinates.cur - iner.cur);
