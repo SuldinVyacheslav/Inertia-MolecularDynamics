@@ -3,7 +3,7 @@
 #define INCLUDE_VECTOR_H_
 
 class Vector {
- public:
+public:
   Vector();
   Vector(double x, double y, double z);
   double x, y, z;
@@ -23,4 +23,4 @@ double distance(Vector v, Vector u);
 
 Vector null();
 
-#endif  // INCLUDE_VECTOR_H_
+#endif // INCLUDE_VECTOR_H_

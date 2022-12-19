@@ -327,5 +327,11 @@ jobs:
 
     - name: clang-format lint
       uses: DoozyX/clang-format-lint-action@v0.15
+      with:
+        source: '.'
+        exclude: './third_party ./external'
+        extensions: 'h,cpp'
+        clangFormatVersion: 14
+        style: chromium
 
       
