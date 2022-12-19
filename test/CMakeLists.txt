@@ -8,10 +8,19 @@ set(Sources
     Test.cpp
 )
 
+
+file(GLOB SRC
+     "*.h"
+     "../src/*.cpp"
+)
+
+
+add_library(lib ${SRC})
 add_executable(${This} ${Sources})
 
 target_link_libraries(${This} PUBLIC
     gtest_main
+    lib
 )
 
 add_test(

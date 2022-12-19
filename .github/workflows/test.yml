@@ -305,8 +305,8 @@ jobs:
           path: ./
       - id: set_upload_url
         run: |
-          upload_url=`cat ./upload_url`
-          echo upload_url=$upload_url >> $GITHUB_OUTPUT
+          upload_url=cat ./upload_url
+          echo upload_url="$upload_url" >> "$GITHUB_OUTPUT"
 
       - name: Upload to Release
         id: upload_to_release
@@ -328,5 +328,7 @@ jobs:
     - name: Super-Linter
       uses: github/super-linter@v4.9.7
       env:
+        VALIDATE_BASH: false
+        VALIDATE_YAML: false
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
